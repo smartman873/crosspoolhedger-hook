@@ -351,7 +351,7 @@ function executeHedgeSwapFromReactive(
 
 ## Demo Run
 
-The demo script tests the full lifecycle from local correctness, through destination hook deployment, demo pool setup, RSC deployment, origin exposure event emission, Lasna RVM polling, and destination callback proof. The available repo artifacts prove deployment, pool setup, RSC deployment, and an origin event; the final live Reactive destination callback transaction is intentionally marked pending until `script/testnet-e2e-with-txids.sh` observes `HedgeExecuted` in the polling window.
+The demo script tests the full lifecycle from local correctness, through destination hook deployment, demo pool setup, RSC deployment, callback reserve funding, origin exposure event emission, Lasna RVM processing, and destination callback execution. The current proof sequence includes the origin `PoolExposureUpdate`, the Lasna RVM transaction that queued the Reactive callback, and the destination transaction that emitted `HedgeExecuted`; final post-callback state check data is still TBD.
 
 ### Deployed Contracts
 
@@ -407,19 +407,26 @@ Pool IDs:
 **Result:** ✅ Origin trigger broadcast artifact exists.  
 **Transaction:** [`0xdeb...f0a`](https://sepolia.uniscan.xyz/tx/0xdebdb52c91c7a8746eff8966cabb20204aa19dce89f06bc7b7f5e34758431f0a)
 
-#### Step 6 — Lasna RVM Callback Queue
+#### Step 6 — Callback Reserve Funding
+
+**Action:** Fund the destination callback reserve before relay execution.  
+**Expected:** The callback path has enough reserve to pay for Reactive delivery and does not stall on callback debt.  
+**Result:** ✅ Callback reserve funding transaction confirmed.  
+**Transaction:** [`0x7250...181c`](https://sepolia.uniscan.xyz/tx/0x7250489b678150c00ae939ed9fb83f8b8c35c3c3bf08b9ee51ed471db5ed181c)
+
+#### Step 7 — Lasna RVM Callback Queue
 
 **Action:** Poll `rnk_getVm` and `rnk_getTransactions` near the RVM tail for a Lasna transaction that references the origin event.  
 **Expected:** The RVM processes the origin event and emits a Reactive callback.  
-**Result:** ⚠️ Pending in available artifacts; the e2e script exits instead of claiming this proof if no RVM tx is observed.  
-**Transaction:** TODO: add the observed Lasna RVM transaction after a successful live relay run.
+**Result:** ✅ Lasna RVM processed the origin event and queued the Reactive callback.  
+**Transaction:** [`0xf65a...0183`](https://lasna.reactscan.net/tx/0xf65ae6652e098c734672ab5622d1bbacf4c17b6f7b65ed49d0beeaf67e3b0183)
 
-#### Step 7 — Destination Hedge Callback
+#### Step 8 — Destination Hedge Callback
 
 **Action:** Poll Unichain Sepolia logs for `HedgeExecuted(bytes32,int256,int256,int256,uint256)` from the hook.  
 **Expected:** Reactive callback proxy calls `executeHedgeSwapFromReactive`, the hook authenticates the call, and `HedgeExecuted` proves imbalance reduction.  
-**Result:** ⚠️ Pending in available artifacts; the e2e script does not claim completion without this transaction.  
-**Transaction:** TODO: add the observed destination callback transaction after a successful live relay run.
+**Result:** ✅ Destination callback executed and emitted `HedgeExecuted`; final state check is TBD — data not provided.  
+**Transaction:** [`0x0606...7c16`](https://sepolia.uniscan.xyz/tx/0x06065bdd125221f69b979da6df792da4d54eec6ef9ff4179f793dfbfb5587c16)
 
 ### Demo Output
 
@@ -444,11 +451,20 @@ https://sepolia.uniscan.xyz/tx/0xa2b9c8b70886631c64ecc21905a0d68adbfff328ad7973a
 Lasna RSC deploy tx:
 https://lasna.reactscan.net/tx/0x363d086356b16e5a37e7171cfbeddcf0800cd2bc0a4301081185aaa2116c5b53
 
+Callback reserve tx:
+https://sepolia.uniscan.xyz/tx/0x7250489b678150c00ae939ed9fb83f8b8c35c3c3bf08b9ee51ed471db5ed181c
+
 Origin PoolExposureUpdate tx:
 https://sepolia.uniscan.xyz/tx/0xdebdb52c91c7a8746eff8966cabb20204aa19dce89f06bc7b7f5e34758431f0a
 
-Pending final proof:
-Lasna RVM queued callback tx and destination HedgeExecuted tx must be captured by ./script/testnet-e2e-with-txids.sh before claiming a complete live Reactive relay.
+Lasna RVM callback queued tx:
+https://lasna.reactscan.net/tx/0xf65ae6652e098c734672ab5622d1bbacf4c17b6f7b65ed49d0beeaf67e3b0183
+
+Destination HedgeExecuted tx:
+https://sepolia.uniscan.xyz/tx/0x06065bdd125221f69b979da6df792da4d54eec6ef9ff4179f793dfbfb5587c16
+
+Final state check:
+TBD — data not provided.
 ```
 
 ## Test Coverage
@@ -591,7 +607,7 @@ forge script script/DemoCrossPoolHedger.s.sol:DemoCrossPoolHedger
 
 ### Current Limitations
 
-- The live artifacts currently include hook deployment, RSC deployment, pool setup, and origin exposure trigger transactions, but the final Lasna RVM callback and destination `HedgeExecuted` transaction must still be captured before claiming a complete live Reactive relay.
+- The live artifacts currently include hook deployment, RSC deployment, pool setup, callback reserve funding, origin exposure trigger, Lasna RVM callback queueing, and destination `HedgeExecuted`; the final post-callback state check remains TBD — data not provided.
 - The v1 exposure model is pool-level and baseline-price based; it does not yet compute per-position IL against a full no-hedge counterfactual.
 - The optional `IHedgeExecutor` adapter is intentionally minimal; production routing should integrate PoolManager unlock/settlement, token reserve management, and slippage controls.
 - Pool-pair selection is owner-configured and does not include on-chain correlation validation.
