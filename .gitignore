@@ -1,0 +1,12 @@
+.env
+out/
+cache/
+broadcast/
+node_modules/
+coverage/
+lcov.info
+frontend/dist/
+frontend/node_modules/
+frontend/.vercel/
+context/
+.DS_Store
