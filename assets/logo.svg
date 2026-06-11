@@ -1,0 +1,10 @@
+<svg width="960" height="240" viewBox="0 0 960 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="960" height="240" rx="28" fill="#0B1020"/>
+  <circle cx="126" cy="120" r="62" stroke="#FF4FD8" stroke-width="10"/>
+  <circle cx="194" cy="120" r="62" stroke="#6D5CFF" stroke-width="10"/>
+  <path d="M140 120h40" stroke="#E8ECFF" stroke-width="10" stroke-linecap="round"/>
+  <path d="M162 95l22 25-22 25" stroke="#E8ECFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="294" y="104" fill="#E8ECFF" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="800">CrossPoolHedger</text>
+  <text x="296" y="156" fill="#9DA8C8" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="500">Correlated pairs cancel each other's IL</text>
+  <text x="296" y="190" fill="#B57CFF" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Uniswap v4 Hook + Reactive Network RSC</text>
+</svg>
