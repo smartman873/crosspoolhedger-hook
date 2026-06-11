@@ -1,0 +1,14 @@
+<svg width="1200" height="560" viewBox="0 0 1200 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="560" rx="22" fill="#07111F"/>
+  <text x="48" y="70" fill="#E8ECFF" font-family="Menlo, Consolas, monospace" font-size="28" font-weight="700">forge coverage --report summary --no-match-coverage 'script|test'</text>
+  <text x="48" y="124" fill="#7EE787" font-family="Menlo, Consolas, monospace" font-size="24">68 tests passed, 0 failed, 0 skipped</text>
+  <rect x="46" y="160" width="1108" height="300" rx="12" fill="#0D1B2E" stroke="#253A5A"/>
+  <text x="76" y="215" fill="#B9C6E4" font-family="Menlo, Consolas, monospace" font-size="21">File                              Lines      Statements Branches   Funcs</text>
+  <line x1="76" y1="240" x2="1124" y2="240" stroke="#253A5A"/>
+  <text x="76" y="285" fill="#E8ECFF" font-family="Menlo, Consolas, monospace" font-size="21">src/hooks/CrossPoolHedgerHook.sol 100.00%    100.00%    100.00%    100.00%</text>
+  <text x="76" y="330" fill="#E8ECFF" font-family="Menlo, Consolas, monospace" font-size="21">src/libraries/ExposureMath.sol    100.00%    100.00%    100.00%    100.00%</text>
+  <text x="76" y="375" fill="#E8ECFF" font-family="Menlo, Consolas, monospace" font-size="21">src/rsc/CrossPoolHedgerRSC.sol    100.00%    100.00%    100.00%    100.00%</text>
+  <line x1="76" y1="402" x2="1124" y2="402" stroke="#253A5A"/>
+  <text x="76" y="445" fill="#7EE787" font-family="Menlo, Consolas, monospace" font-size="23" font-weight="700">Total                             100.00%    100.00%    100.00%    100.00%</text>
+  <text x="48" y="510" fill="#9DA8C8" font-family="Menlo, Consolas, monospace" font-size="18">Source scoped: scripts and tests excluded from coverage denominator.</text>
+</svg>
