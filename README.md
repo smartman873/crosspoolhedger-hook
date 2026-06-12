@@ -12,6 +12,8 @@
 ![Coverage 100%](https://img.shields.io/badge/Coverage-100%25-brightgreen)
 ![UHI9 Hookathon 2026](https://img.shields.io/badge/UHI9-Hookathon%202026-blueviolet)
 
+**Submission links:** [Presentation deck](https://gamma.app/docs/Correlated-pairs-cancel-each-others-impermanent-loss-8h1avd6t4um21tf) · [Demo video](https://youtu.be/C-N3OAoOHv0)
+
 ---
 
 CrossPoolHedger is a Uniswap v4 hook that coordinates liquidity-provider exposure across two correlated pools, such as ETH/USDC and ETH/stETH. Instead of treating impermanent loss as an isolated pool-local event, the hook emits pool exposure updates and lets a Reactive Smart Contract maintain the combined cross-pool imbalance. When the imbalance exceeds a threshold, the RSC queues a callback that instructs the hook to reduce the target pool's recorded exposure through a controlled hedge path. Built for the UHI9 Hookathon — Impermanent Loss & Yield Systems.
