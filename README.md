@@ -29,8 +29,6 @@ CrossPoolHedger is a Uniswap v4 hook that coordinates liquidity-provider exposur
 - [Demo Run](#demo-run)
 - [Test Coverage](#test-coverage)
 - [Local Development](#local-development)
-- [Security Considerations](#security-considerations)
-- [Known Limitations & Future Work](#known-limitations--future-work)
 - [Contributing & License](#contributing--license)
 - [Acknowledgements](#acknowledgements)
 
@@ -589,37 +587,6 @@ forge script script/DeployRSC.s.sol:DeployCrossPoolHedgerRSC \
 ```bash
 forge script script/DemoCrossPoolHedger.s.sol:DemoCrossPoolHedger
 ```
-
-## Security Considerations
-
-1. **Reactive callback access control** — `executeHedgeSwapFromReactive` requires `msg.sender == callbackProxy` and `sender == reactiveSender`, preventing arbitrary callers from spoofing Reactive execution.
-2. **Pool pair validation** — LP and swap callbacks reject unregistered pools, and owner registration rejects zero or duplicate PoolIds.
-3. **Parameter validation** — `setHedgeParams` rejects non-positive thresholds, and callback address setters reject zero addresses.
-4. **Overflow and underflow protection** — Solidity `0.8.29` checked arithmetic is used, while removal paths clamp liquidity subtraction to zero when the requested removal exceeds tracked state.
-5. **Reentrancy protection** — Hedge execution uses `hedgeLock` before optional external executor calls, and tests cover a reentering executor revert.
-6. **Cooldown enforcement** — `lastHedgeBlock` and `cooldownBlocks` prevent rapid repeated hedge execution after threshold breaches.
-7. **RSC graceful degradation** — If Lasna subscription is unavailable, the constructor emits `SubscriptionUnavailable`, and `configureSubscription()` can be called later by the subscription admin.
-8. **Callback payment readiness** — The demo script checks callback reserve/debt paths before claiming relay completion, because a queued Reactive callback can fail to arrive if payment debt is unresolved.
-9. **MEV surface** — A production external hedge executor can create sandwichable transactions; v1 mitigates this by hedging only half the imbalance and preserving a cooldown, but a production swap adapter should add explicit slippage limits. (Acknowledged — acceptable tradeoff because this hackathon version prioritizes deterministic cross-pool proof over complex routing.)
-10. **Hedge execution model** — The current hook reduces internal exposure accounting and exposes `IHedgeExecutor` as an adapter slot rather than shipping a full PoolManager unlock/settlement hedge router. (Acknowledged — acceptable tradeoff because the RSC proof, callback auth, and exposure lifecycle are isolated and test-covered.)
-
-## Known Limitations & Future Work
-
-### Current Limitations
-
-- The live artifacts confirm hook deployment, RSC deployment, pool setup, callback reserve funding, origin exposure trigger, Lasna RVM callback queueing, and destination `HedgeExecuted`.
-- The v1 exposure model is pool-level and baseline-price based; it does not yet compute per-position IL against a full no-hedge counterfactual.
-- The optional `IHedgeExecutor` adapter is intentionally minimal; production routing should integrate PoolManager unlock/settlement, token reserve management, and slippage controls.
-- Pool-pair selection is owner-configured and does not include on-chain correlation validation.
-- Callback queueing is guarded per PoolId in the RSC; production deployments should include a callback completion or retry accounting strategy.
-
-### Future Work
-
-- Add a production PoolManager hedge executor that performs real token swaps with strict `sqrtPriceLimitX96`, reserve accounting, and post-swap exposure reconciliation.
-- Add a pool deployer calibration UI for hedge threshold, cooldown, and pair-specific correlation assumptions.
-- Extend the RSC to clear or rotate `callbackQueued` after destination confirmation, enabling safe retry behavior without duplicate callback noise.
-- Add an IL analytics dashboard that compares CrossPoolHedger LP outcomes against an unhedged baseline over the same swap path.
-- Support multiple correlated pool pairs behind one registry while preserving per-pair RSC subscriptions and isolated risk accounting.
 
 ## Contributing & License
 
